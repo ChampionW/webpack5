@@ -25,6 +25,9 @@ module.exports = {
     new StylelintPlugin(),
     new ESLintPlugin({
       fix: true,
+      exclude: 'node_modules', // 默认值
+      cache: true, // 开启缓存
+      cacheLocation: path.resolve(__dirname, '../node_modules/.cache/.eslintcache'), // 缓存放置路径
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html', // 按照模版生成的文件名称
@@ -78,7 +81,16 @@ module.exports = {
       },
       {
         test: /\.(js|jsx|ts|tsx)$/,
-        use: ['babel-loader', 'ts-loader'],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true, // 开启babel编译缓存
+              cacheCompression: false, // 缓存文件不要压缩，压缩需要时间
+            },
+          },
+          'ts-loader',
+        ],
         exclude: /node_modules/,
       },
     ],
